@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>WaMPaS — Document Library</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Inter',sans-serif;font-size:14px;color:#2C2C2E;background:#F4F2EE;line-height:1.5;overflow:hidden}
+
+/* ---------- LAYOUT ---------- */
+.app{display:grid;grid-template-rows:64px 1fr;height:100vh}
+.shell{display:grid;grid-template-columns:300px 1fr;min-height:0}
+.sidebar{background:#0F1B2D;color:#E8E6E0;overflow-y:auto;border-right:1px solid #1a2a45}
+.main{display:flex;flex-direction:column;min-width:0;background:#F4F2EE}
+.frame-wrap{flex:1;min-height:0;position:relative;background:#F4F2EE}
+.frame-wrap iframe{width:100%;height:100%;border:0;background:#F4F2EE}
+
+/* ---------- TOPBAR ---------- */
+.topbar{display:flex;align-items:center;gap:20px;padding:0 24px;background:#0F1B2D;color:#E8E6E0;border-bottom:3px solid #C9A84C}
+.brand{display:flex;align-items:center;gap:14px;cursor:pointer;user-select:none}
+.brand-mark{width:36px;height:36px;border-radius:4px;background:linear-gradient(135deg,#C9A84C 0%,#a8893a 100%);display:flex;align-items:center;justify-content:center;font-family:'DM Serif Display',serif;font-size:20px;color:#0F1B2D;font-weight:700}
+.brand-text{display:flex;flex-direction:column;line-height:1.1}
+.brand-name{font-family:'DM Serif Display',serif;font-size:18px;color:#FFFFFF;letter-spacing:.5px}
+.brand-tag{font-size:10px;color:#C9A84C;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-top:2px}
+
+.search{flex:1;max-width:480px;position:relative}
+.search input{width:100%;background:#1a2a45;border:1px solid #2a3a55;color:#E8E6E0;font-family:inherit;font-size:13px;padding:9px 14px 9px 36px;border-radius:6px;outline:none;transition:all .15s}
+.search input::placeholder{color:#8a93a5}
+.search input:focus{border-color:#C9A84C;background:#1f3050}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#8a93a5;pointer-events:none}
+.search-kbd{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:10px;color:#8a93a5;background:#0F1B2D;border:1px solid #2a3a55;padding:2px 6px;border-radius:3px;pointer-events:none}
+
+.phase-pills{display:flex;gap:6px}
+.phase-pill{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 12px;border-radius:20px;background:transparent;border:1px solid #2a3a55;color:#AAAAAA;cursor:pointer;transition:all .15s;font-family:inherit}
+.phase-pill:hover{border-color:#C9A84C;color:#C9A84C}
+.phase-pill.active{background:#C9A84C;color:#0F1B2D;border-color:#C9A84C}
+
+/* ---------- SIDEBAR ---------- */
+.side-section{padding:18px 0 6px}
+.side-head{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#8a93a5;padding:0 20px 8px;font-weight:700}
+
+.group{margin-bottom:4px}
+.group-head{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;cursor:pointer;user-select:none;transition:background .15s}
+.group-head:hover{background:#1a2a45}
+.group-head.active{background:#1a2a45}
+.group-title{font-size:13px;font-weight:700;color:#FFFFFF;letter-spacing:.3px;display:flex;align-items:center;gap:10px}
+.group-dot{width:8px;height:8px;border-radius:50%;background:#C9A84C;flex-shrink:0}
+.group.grand .group-dot{background:#C9A84C}
+.group.p1 .group-dot{background:#1A7F6E}
+.group.p2 .group-dot{background:#E0A536}
+.group.p3 .group-dot{background:#7B8AA6}
+.group-count{font-size:11px;color:#8a93a5;font-weight:600}
+.group-chev{color:#8a93a5;transition:transform .2s}
+.group.collapsed .group-chev{transform:rotate(-90deg)}
+.group.collapsed .group-list{display:none}
+
+.group-list{list-style:none;padding:4px 0 8px}
+.doc-link{display:flex;align-items:center;gap:10px;padding:8px 20px 8px 42px;cursor:pointer;color:#AAB1BD;font-size:13px;border-left:3px solid transparent;transition:all .12s;text-decoration:none}
+.doc-link:hover{background:#1a2a45;color:#FFFFFF}
+.doc-link.active{background:#1a2a45;color:#C9A84C;border-left-color:#C9A84C;font-weight:600}
+.doc-num{font-size:10px;font-weight:700;color:#8a93a5;background:#0a1320;padding:2px 6px;border-radius:3px;min-width:22px;text-align:center;font-family:'SF Mono',Menlo,monospace}
+.doc-link.active .doc-num{color:#C9A84C;background:#0a1320}
+
+.side-foot{padding:16px 20px;border-top:1px solid #1a2a45;margin-top:8px;font-size:11px;color:#8a93a5;line-height:1.6}
+.side-foot strong{color:#E8E6E0;display:block;margin-bottom:4px;font-weight:600}
+.side-foot a{color:#C9A84C;text-decoration:none}
+
+/* ---------- DOC TOOLBAR ---------- */
+.doc-toolbar{display:flex;align-items:center;gap:14px;padding:10px 24px;background:#FFFFFF;border-bottom:1px solid #D0CCBF;flex-shrink:0;min-height:48px}
+.crumb{display:flex;align-items:center;gap:8px;font-size:12px;color:#666;flex:1;min-width:0}
+.crumb-sep{color:#C9A84C}
+.crumb-current{color:#0F1B2D;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crumb-home{cursor:pointer;color:#666}
+.crumb-home:hover{color:#0F1B2D}
+
+.tool-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:transparent;border:1px solid #D0CCBF;border-radius:4px;font-family:inherit;font-size:12px;color:#0F1B2D;cursor:pointer;transition:all .15s;text-decoration:none;font-weight:500;white-space:nowrap}
+.tool-btn:hover{background:#0F1B2D;color:#C9A84C;border-color:#0F1B2D}
+.tool-btn:disabled{opacity:.4;cursor:not-allowed}
+.tool-btn:disabled:hover{background:transparent;color:#0F1B2D;border-color:#D0CCBF}
+.tool-btn.primary{background:#0F1B2D;color:#C9A84C;border-color:#0F1B2D}
+.tool-btn.primary:hover{background:#1a2a45}
+
+/* ---------- LANDING ---------- */
+.landing{padding:48px 56px;overflow-y:auto;height:100%}
+.hero{max-width:980px;margin:0 auto 40px}
+.hero-tag{font-size:11px;font-weight:700;color:#C9A84C;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.hero-title{font-family:'DM Serif Display',serif;font-size:48px;color:#0F1B2D;line-height:1.05;margin-bottom:14px;letter-spacing:-.5px}
+.hero-sub{font-size:16px;color:#555;max-width:680px;line-height:1.6;font-style:italic}
+.hero-meta{margin-top:20px;padding-top:20px;border-top:2px solid #C9A84C;font-size:12px;color:#888;display:flex;gap:20px;flex-wrap:wrap}
+.hero-meta strong{color:#0F1B2D;font-weight:600}
+
+.matrix{max-width:980px;margin:0 auto}
+.matrix-head{font-size:12px;font-weight:700;color:#0F1B2D;letter-spacing:2px;text-transform:uppercase;margin:32px 0 16px;padding-bottom:8px;border-bottom:2px solid #0F1B2D;display:flex;align-items:center;gap:10px}
+.matrix-head .dot{width:8px;height:8px;border-radius:50%}
+.matrix-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.matrix-card{background:#FFFFFF;border:1px solid #D0CCBF;border-radius:6px;padding:18px 18px 16px;cursor:pointer;transition:all .18s;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden}
+.matrix-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#C9A84C;transform:translateX(-4px);transition:transform .18s}
+.matrix-card:hover{border-color:#0F1B2D;box-shadow:0 6px 20px rgba(15,27,45,.12);transform:translateY(-2px)}
+.matrix-card:hover::before{transform:translateX(0)}
+.matrix-card.grand::before{background:#C9A84C}
+.matrix-card.p1::before{background:#1A7F6E}
+.matrix-card.p2::before{background:#E0A536}
+.matrix-card.p3::before{background:#7B8AA6}
+.card-num{font-size:10px;font-weight:700;color:#8a93a5;letter-spacing:1px;font-family:'SF Mono',Menlo,monospace}
+.card-title{font-size:14px;font-weight:700;color:#0F1B2D;line-height:1.3}
+.card-meta{font-size:11px;color:#888;margin-top:auto;display:flex;align-items:center;gap:6px;padding-top:8px}
+
+.legend{max-width:980px;margin:48px auto 24px;padding:20px 24px;background:#FFFFFF;border:1px solid #D0CCBF;border-radius:6px}
+.legend-title{font-size:11px;font-weight:700;color:#0F1B2D;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.legend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.legend-item{display:flex;gap:10px;align-items:flex-start;font-size:12px}
+.legend-item .dot{width:10px;height:10px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.legend-item strong{color:#0F1B2D;display:block;margin-bottom:2px;font-weight:700;font-size:13px}
+.legend-item span{color:#666;line-height:1.5}
+
+.shortcuts{max-width:980px;margin:0 auto 48px;padding:20px 24px;background:#0F1B2D;border-radius:6px;color:#E8E6E0}
+.shortcuts-title{font-size:11px;font-weight:700;color:#C9A84C;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.shortcuts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:12px}
+.shortcuts-grid span{display:flex;align-items:center;gap:8px}
+.kbd{display:inline-block;background:#1a2a45;border:1px solid #2a3a55;color:#C9A84C;padding:2px 7px;border-radius:3px;font-family:'SF Mono',Menlo,monospace;font-size:11px;font-weight:600}
+
+/* ---------- EMPTY / HIDDEN ---------- */
+.no-results{padding:20px;text-align:center;color:#8a93a5;font-size:12px;font-style:italic}
+.hidden{display:none!important}
+
+/* ---------- MOBILE ---------- */
+.menu-toggle{display:none;background:transparent;border:1px solid #2a3a55;color:#E8E6E0;padding:6px 10px;border-radius:4px;cursor:pointer;font-size:14px}
+
+@media (max-width:880px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:0;top:64px;bottom:0;width:280px;z-index:50;transform:translateX(-100%);transition:transform .2s;box-shadow:0 0 30px rgba(0,0,0,.3)}
+  .sidebar.open{transform:translateX(0)}
+  .menu-toggle{display:inline-flex;align-items:center;gap:6px}
+  .phase-pills{display:none}
+  .search{max-width:none}
+  .landing{padding:28px 20px}
+  .hero-title{font-size:32px}
+  .doc-toolbar{padding:8px 14px;gap:8px;flex-wrap:wrap}
+  .scrim{position:fixed;inset:64px 0 0;background:rgba(0,0,0,.4);z-index:40;display:none}
+  .scrim.show{display:block}
+}
+
+/* ---------- SCROLLBARS ---------- */
+.sidebar::-webkit-scrollbar,.landing::-webkit-scrollbar{width:8px}
+.sidebar::-webkit-scrollbar-track{background:#0F1B2D}
+.sidebar::-webkit-scrollbar-thumb{background:#2a3a55;border-radius:4px}
+.sidebar::-webkit-scrollbar-thumb:hover{background:#3a4a65}
+.landing::-webkit-scrollbar-track{background:#F4F2EE}
+.landing::-webkit-scrollbar-thumb{background:#D0CCBF;border-radius:4px}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============== TOPBAR ============== -->
+  <header class="topbar">
+    <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+    <div class="brand" onclick="goHome()">
+      <div class="brand-mark">W</div>
+      <div class="brand-text">
+        <div class="brand-name">WaMPaS</div>
+        <div class="brand-tag">Document Library</div>
+      </div>
+    </div>
+
+    <div class="search">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="search" type="text" placeholder="Search documents…" autocomplete="off"/>
+      <span class="search-kbd">/</span>
+    </div>
+
+    <nav class="phase-pills" id="phasePills"></nav>
+  </header>
+
+  <!-- ============== SHELL ============== -->
+  <div class="shell">
+    <div class="scrim" id="scrim"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="side-section">
+        <div class="side-head">Document Set</div>
+        <div id="nav"></div>
+      </div>
+      <div class="side-foot">
+        <strong>WaMPaS · v2.0</strong>
+        Prepared by Richard Uzor<br>
+        Devstrike Digital Limited<br>
+        <a href="https://whatmypastorsaid.com" target="_blank" rel="noopener">whatmypastorsaid.com</a>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <!-- LANDING (visible when no doc selected) -->
+      <div class="landing" id="landing">
+        <section class="hero">
+          <div class="hero-tag">Documentation Library</div>
+          <h1 class="hero-title">WaMPaS — What My Pastor Said</h1>
+          <p class="hero-sub">A unified, three-layer Christian platform for Nigeria and the African diaspora. This library bundles 20 specification documents across the Grand Vision and three implementation phases.</p>
+          <div class="hero-meta">
+            <span><strong>20 documents</strong></span>
+            <span><strong>4 phases</strong> · Grand · P1 · P2 · P3</span>
+            <span><strong>5 dimensions</strong> · Product · Flows · Finance · Tech · Infra</span>
+            <span><strong>v2.0</strong> · May 2026</span>
+          </div>
+        </section>
+
+        <section class="matrix" id="matrix"></section>
+
+        <section class="legend">
+          <div class="legend-title">Document Dimensions</div>
+          <div class="legend-grid">
+            <div class="legend-item"><span class="dot" style="background:#0F1B2D"></span><div><strong>01 — Product Overview</strong><span>Vision, layers, personas, success metrics</span></div></div>
+            <div class="legend-item"><span class="dot" style="background:#1A7F6E"></span><div><strong>02 — System Flows</strong><span>User journeys, lifecycles, moderation paths</span></div></div>
+            <div class="legend-item"><span class="dot" style="background:#C9A84C"></span><div><strong>03 — Financial Specification</strong><span>Revenue model, unit economics, payment infra</span></div></div>
+            <div class="legend-item"><span class="dot" style="background:#7A4F00"></span><div><strong>04 — Technical Architecture</strong><span>Stack, data model, APIs, security</span></div></div>
+            <div class="legend-item"><span class="dot" style="background:#7B8AA6"></span><div><strong>05 — Infrastructure Report</strong><span>Hosting, observability, scaling plan</span></div></div>
+          </div>
+        </section>
+
+        <section class="shortcuts">
+          <div class="shortcuts-title">Keyboard Shortcuts</div>
+          <div class="shortcuts-grid">
+            <span><span class="kbd">/</span> Focus search</span>
+            <span><span class="kbd">[</span> Previous document</span>
+            <span><span class="kbd">]</span> Next document</span>
+            <span><span class="kbd">h</span> Return to home</span>
+            <span><span class="kbd">Esc</span> Clear search</span>
+            <span><span class="kbd">⌘/Ctrl + K</span> Focus search</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- DOC VIEWER -->
+      <div class="doc-toolbar hidden" id="docToolbar">
+        <div class="crumb">
+          <span class="crumb-home" onclick="goHome()">Library</span>
+          <span class="crumb-sep">›</span>
+          <span id="crumbPhase"></span>
+          <span class="crumb-sep">›</span>
+          <span class="crumb-current" id="crumbDoc"></span>
+        </div>
+        <button class="tool-btn" id="btnPrev" onclick="navStep(-1)" title="Previous (])">← Prev</button>
+        <button class="tool-btn" id="btnNext" onclick="navStep(1)" title="Next ([)">Next →</button>
+        <button class="tool-btn" onclick="window.frames.docFrame && window.frames.docFrame.print()" title="Print">Print</button>
+        <a class="tool-btn primary" id="btnOpen" target="_blank" rel="noopener">Open ↗</a>
+      </div>
+      <div class="frame-wrap hidden" id="frameWrap">
+        <iframe id="docFrame" name="docFrame" title="Document viewer"></iframe>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+// ============== DATA ==============
+const PHASES = [
+  { key: 'GRAND',  label: 'Grand Vision', short: 'Grand', cls: 'grand', dot: '#C9A84C' },
+  { key: 'PHASE1', label: 'Phase 1',       short: 'P1',    cls: 'p1',    dot: '#1A7F6E' },
+  { key: 'PHASE2', label: 'Phase 2',       short: 'P2',    cls: 'p2',    dot: '#E0A536' },
+  { key: 'PHASE3', label: 'Phase 3',       short: 'P3',    cls: 'p3',    dot: '#7B8AA6' },
+];
+
+const DOCS = [
+  { num: '01', slug: 'Product_Overview',         title: 'Product Overview' },
+  { num: '02', slug: 'System_Flows',             title: 'System Flows' },
+  { num: '03', slug: 'Financial_Specification',  title: 'Financial Specification' },
+  { num: '04', slug: 'Technical_Architecture',   title: 'Technical Architecture' },
+  { num: '05', slug: 'Infrastructure_Report',    title: 'Infrastructure Report' },
+];
+
+const ALL = PHASES.flatMap(p => DOCS.map(d => ({
+  id: `${p.key}/${d.num}`,
+  phase: p,
+  doc: d,
+  file: `markups/WaMPaS_${p.key}_${d.num}_${d.slug}.html`,
+})));
+
+// ============== RENDER NAV ==============
+function renderPhasePills() {
+  const wrap = document.getElementById('phasePills');
+  wrap.innerHTML = PHASES.map(p =>
+    `<button class="phase-pill" data-phase="${p.key}" onclick="filterPhase('${p.key}')">${p.short}</button>`
+  ).join('');
+}
+
+function renderNav() {
+  const nav = document.getElementById('nav');
+  nav.innerHTML = PHASES.map(p => {
+    const items = ALL.filter(a => a.phase.key === p.key);
+    return `
+      <div class="group ${p.cls}" data-phase="${p.key}">
+        <div class="group-head" onclick="toggleGroup('${p.key}')">
+          <div class="group-title"><span class="group-dot"></span>${p.label}</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="group-count">${items.length}</span>
+            <span class="group-chev">▾</span>
+          </div>
+        </div>
+        <ul class="group-list">
+          ${items.map(a => `
+            <li>
+              <a class="doc-link" data-id="${a.id}" href="#${a.id}" onclick="closeMobileNav()">
+                <span class="doc-num">${a.doc.num}</span>
+                <span>${a.doc.title}</span>
+              </a>
+            </li>
+          `).join('')}
+        </ul>
+      </div>`;
+  }).join('');
+}
+
+function renderMatrix() {
+  const m = document.getElementById('matrix');
+  m.innerHTML = PHASES.map(p => {
+    const items = ALL.filter(a => a.phase.key === p.key);
+    return `
+      <div class="matrix-head"><span class="dot" style="background:${p.dot}"></span>${p.label}</div>
+      <div class="matrix-grid">
+        ${items.map(a => `
+          <a class="matrix-card ${p.cls}" href="#${a.id}">
+            <div class="card-num">${p.key} · ${a.doc.num}</div>
+            <div class="card-title">${a.doc.title}</div>
+            <div class="card-meta">${p.label} dimension</div>
+          </a>
+        `).join('')}
+      </div>`;
+  }).join('');
+}
+
+// ============== ROUTING ==============
+let currentId = null;
+let phaseFilter = null;
+
+function showLanding() {
+  document.getElementById('landing').classList.remove('hidden');
+  document.getElementById('docToolbar').classList.add('hidden');
+  document.getElementById('frameWrap').classList.add('hidden');
+  document.querySelectorAll('.doc-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.group').forEach(g => g.classList.remove('active'));
+  currentId = null;
+  document.title = 'WaMPaS — Document Library';
+}
+
+function showDoc(id) {
+  const item = ALL.find(a => a.id === id);
+  if (!item) { showLanding(); return; }
+  currentId = id;
+
+  document.getElementById('landing').classList.add('hidden');
+  document.getElementById('docToolbar').classList.remove('hidden');
+  document.getElementById('frameWrap').classList.remove('hidden');
+
+  const frame = document.getElementById('docFrame');
+  if (frame.getAttribute('src') !== item.file) frame.setAttribute('src', item.file);
+
+  document.getElementById('crumbPhase').textContent = item.phase.label;
+  document.getElementById('crumbDoc').textContent  = item.doc.title;
+  document.getElementById('btnOpen').setAttribute('href', item.file);
+
+  document.querySelectorAll('.doc-link').forEach(l => l.classList.toggle('active', l.dataset.id === id));
+  document.querySelectorAll('.group').forEach(g => {
+    g.classList.toggle('active', g.dataset.phase === item.phase.key);
+    if (g.dataset.phase === item.phase.key) g.classList.remove('collapsed');
+  });
+
+  const idx = ALL.findIndex(a => a.id === id);
+  document.getElementById('btnPrev').disabled = idx <= 0;
+  document.getElementById('btnNext').disabled = idx >= ALL.length - 1;
+
+  document.title = `${item.doc.title} — ${item.phase.label} — WaMPaS`;
+
+  // Scroll active sidebar item into view
+  const active = document.querySelector('.doc-link.active');
+  if (active) active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function navStep(delta) {
+  if (!currentId) return;
+  const idx = ALL.findIndex(a => a.id === currentId);
+  const next = ALL[idx + delta];
+  if (next) location.hash = next.id;
+}
+
+function goHome() {
+  location.hash = '';
+  showLanding();
+}
+
+function applyHash() {
+  const h = location.hash.replace(/^#/, '');
+  if (h && ALL.some(a => a.id === h)) showDoc(h);
+  else showLanding();
+}
+
+// ============== INTERACTIONS ==============
+function toggleGroup(key) {
+  const g = document.querySelector(`.group[data-phase="${key}"]`);
+  g.classList.toggle('collapsed');
+}
+
+function filterPhase(key) {
+  phaseFilter = (phaseFilter === key) ? null : key;
+  document.querySelectorAll('.phase-pill').forEach(b => b.classList.toggle('active', b.dataset.phase === phaseFilter));
+  document.querySelectorAll('.group').forEach(g => {
+    if (!phaseFilter) g.classList.remove('hidden');
+    else g.classList.toggle('hidden', g.dataset.phase !== phaseFilter);
+  });
+  // Also auto-expand the filtered group
+  if (phaseFilter) {
+    const g = document.querySelector(`.group[data-phase="${phaseFilter}"]`);
+    g && g.classList.remove('collapsed');
+  }
+}
+
+function applySearch(q) {
+  q = q.trim().toLowerCase();
+  const groups = document.querySelectorAll('.group');
+  groups.forEach(g => {
+    const links = g.querySelectorAll('.doc-link');
+    let anyVisible = false;
+    links.forEach(l => {
+      const txt = l.textContent.toLowerCase();
+      const phaseTxt = g.querySelector('.group-title').textContent.toLowerCase();
+      const match = !q || txt.includes(q) || phaseTxt.includes(q);
+      l.parentElement.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    if (phaseFilter && g.dataset.phase !== phaseFilter) { g.classList.add('hidden'); return; }
+    g.classList.toggle('hidden', !anyVisible);
+    if (q) g.classList.remove('collapsed');
+  });
+}
+
+// ============== MOBILE ==============
+function closeMobileNav() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('scrim').classList.remove('show');
+}
+document.getElementById('menuToggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('scrim').classList.toggle('show');
+});
+document.getElementById('scrim').addEventListener('click', closeMobileNav);
+
+// ============== KEYBOARD ==============
+document.addEventListener('keydown', (e) => {
+  const inField = ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName);
+  if (inField) {
+    if (e.key === 'Escape') { document.activeElement.blur(); document.getElementById('search').value=''; applySearch(''); }
+    return;
+  }
+  if (e.key === '/' || ((e.ctrlKey || e.metaKey) && e.key === 'k')) {
+    e.preventDefault();
+    document.getElementById('search').focus();
+  } else if (e.key === '[') {
+    navStep(-1);
+  } else if (e.key === ']') {
+    navStep(1);
+  } else if (e.key === 'h') {
+    goHome();
+  }
+});
+
+document.getElementById('search').addEventListener('input', (e) => applySearch(e.target.value));
+
+window.addEventListener('hashchange', applyHash);
+
+// ============== INIT ==============
+renderPhasePills();
+renderNav();
+renderMatrix();
+applyHash();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Technical Architecture — Phase 1 — WaMPaS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:14px;color:#2C2C2E;background:#F4F2EE;line-height:1.6}
+.page{max-width:900px;margin:0 auto;padding:40px 48px;background:#FFFFFF}
+/* Cover */
+.cover{background:#0F1B2D;padding:80px 60px;margin-bottom:40px;border-radius:4px}
+.cover-tag{font-size:11px;font-weight:700;color:#C9A84C;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.cover-title{font-size:52px;font-weight:700;color:#FFFFFF;line-height:1.1;margin-bottom:12px}
+.cover-sub{font-size:18px;color:#AAAAAA;font-style:italic;margin-bottom:32px}
+.cover-meta{font-size:12px;color:#888;border-top:2px solid #C9A84C;padding-top:16px}
+/* Banners */
+.banner{background:#0F1B2D;color:#C9A84C;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:12px 20px;margin:40px 0 20px;border-radius:3px}
+/* Headings */
+h1{font-size:24px;font-weight:700;color:#0F1B2D;border-bottom:4px solid #C9A84C;padding-bottom:8px;margin:36px 0 14px}
+h2{font-size:18px;font-weight:700;color:#0F1B2D;margin:28px 0 10px}
+h3{font-size:15px;font-weight:700;color:#2C2C2E;margin:20px 0 8px}
+p{margin:6px 0;font-size:14px;color:#2C2C2E}
+/* Callouts */
+.callout{border-left:4px solid #1A7F6E;background:#D4EDE9;padding:14px 18px;margin:16px 0;border-radius:0 4px 4px 0}
+.callout.gold{border-left-color:#C9A84C;background:#F5E6C0}
+.callout.amber{border-left-color:#7A4F00;background:#FFF4D6}
+.callout.navy{border-left-color:#0F1B2D;background:#EEF0F3}
+.callout-label{font-size:12px;font-weight:700;color:#1A7F6E;margin-bottom:6px}
+.callout.gold .callout-label{color:#7A4F00}
+.callout.amber .callout-label{color:#7A4F00}
+.callout.navy .callout-label{color:#0F1B2D}
+.callout p{font-size:13px;color:#2C2C2E}
+/* Tables */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th{background:#0F1B2D;color:#C9A84C;font-weight:700;padding:9px 12px;text-align:left;font-size:12px}
+td{padding:8px 12px;border:1px solid #D0CCBF;color:#2C2C2E}
+tr:nth-child(even) td{background:#F4F2EE}
+tr:nth-child(odd) td{background:#FFFFFF}
+/* Prop rows */
+.prop-table td:first-child{font-weight:600;background:#F4F2EE;width:30%}
+/* Layer blocks */
+.layer-block{border-left:5px solid #0F1B2D;background:#EEF0F3;padding:20px 24px;margin:16px 0;border-radius:0 6px 6px 0}
+.layer-block.teal{border-left-color:#1A7F6E;background:#D4EDE9}
+.layer-block.gold{border-left-color:#C9A84C;background:#F5E6C0}
+.layer-block.navy{border-left-color:#0F1B2D;background:#EEF0F3}
+.layer-num{font-size:11px;font-weight:700;color:#1A7F6E;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.layer-block.gold .layer-num{color:#7A4F00}
+.layer-block.navy .layer-num{color:#0F1B2D}
+.layer-title{font-size:22px;font-weight:700;color:#0F1B2D;margin-bottom:4px}
+.layer-tag{font-size:13px;color:#666666;font-style:italic;margin-bottom:12px}
+.layer-block ul{padding-left:18px;margin-top:8px}
+.layer-block ul li{margin:4px 0;font-size:13px;color:#2C2C2E}
+/* Flow steps */
+.flow-step{border-left:4px solid #C9A84C;background:#F4F2EE;padding:14px 18px;margin:10px 0;border-radius:0 4px 4px 0}
+.flow-step-title{font-size:14px;font-weight:700;color:#0F1B2D;margin-bottom:8px}
+.flow-step ul{padding-left:16px}
+.flow-step ul li{font-size:13px;color:#2C2C2E;margin:3px 0}
+/* Resource cards */
+.res-card{border-left:4px solid #0F1B2D;background:#F4F2EE;padding:16px 20px;margin:12px 0;border-radius:0 4px 4px 0}
+.res-title{font-size:15px;font-weight:700;color:#0F1B2D;margin-bottom:2px}
+.res-provider{font-size:12px;color:#666666;font-style:italic}
+.res-cost{font-size:13px;font-weight:700;color:#1A7F6E;margin:6px 0}
+.res-body{font-size:13px;color:#2C2C2E;margin:4px 0}
+.res-trigger{font-size:12px;color:#666666;font-style:italic;margin-top:6px}
+/* Bullets */
+ul.doc-list{padding-left:20px;margin:8px 0}
+ul.doc-list li{font-size:14px;color:#2C2C2E;margin:4px 0}
+ul.doc-list li span.det{color:#666666;font-size:13px}
+/* Phase badge */
+.phase-1{background:#D4EDE9;color:#1A7F6E;font-weight:700;padding:2px 8px;border-radius:3px;font-size:12px}
+.phase-2{background:#F5E6C0;color:#7A4F00;font-weight:700;padding:2px 8px;border-radius:3px;font-size:12px}
+.phase-3{background:#EEF0F3;color:#0F1B2D;font-weight:700;padding:2px 8px;border-radius:3px;font-size:12px}
+/* Quote */
+.quote-block{background:#0F1B2D;padding:32px 40px;margin:24px 0;border-radius:4px;text-align:center}
+.quote-block p{font-family:'DM Serif Display',serif;font-size:18px;color:#C9A84C;line-height:1.6}
+/* Footer */
+.doc-footer{background:#0F1B2D;padding:20px 24px;margin-top:60px;border-top:3px solid #C9A84C;border-radius:0 0 4px 4px}
+.doc-footer p{font-size:12px;color:#888}
+.doc-footer .footer-brand{color:#C9A84C;margin-top:4px}
+/* Principle */
+.principle{display:flex;gap:0;margin:10px 0}
+.principle-num{background:#0F1B2D;color:#C9A84C;font-size:20px;font-weight:700;padding:16px 20px;min-width:56px;text-align:center;flex-shrink:0}
+.principle-body{border:1px solid #D0CCBF;padding:14px 18px;flex:1}
+.principle-title{font-size:14px;font-weight:700;color:#0F1B2D;margin-bottom:4px}
+.principle-text{font-size:13px;color:#2C2C2E}
+/* Section header in feature matrix */
+.feat-section td{background:#0F1B2D!important;color:#C9A84C!important;font-weight:700;font-size:13px}
+@media print{
+  body{background:white}
+  .page{padding:20px 24px}
+  .cover{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .banner{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .layer-block{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .callout{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="cover">
+  <div class="cover-tag">Technical Architecture — Phase 1</div>
+  <div class="cover-title">Technical Architecture — Phase 1</div>
+  <div class="cover-sub">The Archive MVP</div>
+  <div class="cover-meta">v2.0 &nbsp;&middot;&nbsp; Richard Uzor — May 2026 &nbsp;&middot;&nbsp; Devstrike Digital Limited</div>
+</div>
+<div class="banner">01 — Phase 1 Architecture Principle</div>
+<p>Phase 1 architecture is intentionally minimal. One Next.js app on Vercel, one Node.js API on Railway, one PostgreSQL database. No cache layer, no job queue, no WebSockets. All of these can be added later — starting without them keeps Phase 1 fast to build and easy to debug.</p>
+<div class="banner">02 — Phase 1 Stack</div>
+<table><thead><tr><th>Component</th><th>Technology</th><th>Notes</th></tr></thead><tbody><tr><td>Frontend</td><td>Next.js 14 App Router</td><td>SSR for all pages. No CSR pages in Phase 1.</td></tr><tr><td>API</td><td>Node.js + TypeScript + Express</td><td>REST. JSON. JWT auth in httpOnly cookies.</td></tr><tr><td>Database</td><td>PostgreSQL 15 via Railway</td><td>Prisma ORM. Migrations committed to repo.</td></tr><tr><td>Storage</td><td>Cloudflare R2</td><td>Pastor/church images, generated quote cards.</td></tr><tr><td>Email</td><td>Resend (free tier)</td><td>Verification emails, Q&amp;A notifications.</td></tr><tr><td>Analytics</td><td>Plausible</td><td>Privacy-first. No cookies. No consent banner.</td></tr><tr><td>Error tracking</td><td>Sentry (free tier)</td><td>Frontend + backend exceptions.</td></tr><tr><td>Deployment</td><td>Vercel (Hobby) + Railway (Starter)</td><td>Both free. GitHub-integrated CI/CD.</td></tr></tbody></table>
+<div class="banner">03 — Phase 1 API Endpoints</div>
+<table><thead><tr><th>Method</th><th>Endpoint</th><th>Auth</th><th>Description</th></tr></thead><tbody><tr><td>GET</td><td>/api/v1/messages</td><td>Public</td><td>List messages — category, pastor, church, page filters</td></tr><tr><td>POST</td><td>/api/v1/messages</td><td>Public*</td><td>Create message — *guest requires KYC body fields</td></tr><tr><td>GET</td><td>/api/v1/messages/:id</td><td>Public</td><td>Message detail with Q&amp;A thread</td></tr><tr><td>POST</td><td>/api/v1/messages/:id/react</td><td>Public</td><td>Add reaction</td></tr><tr><td>POST</td><td>/api/v1/messages/:id/report</td><td>Public</td><td>Report with reason</td></tr><tr><td>POST</td><td>/api/v1/messages/:id/question</td><td>Public</td><td>Ask a question</td></tr><tr><td>GET</td><td>/api/v1/pastors</td><td>Public</td><td>List pastors with filters</td></tr><tr><td>POST</td><td>/api/v1/pastors</td><td>Account</td><td>Create pastor profile</td></tr><tr><td>GET</td><td>/api/v1/pastors/:id</td><td>Public</td><td>Pastor profile + messages</td></tr><tr><td>PUT</td><td>/api/v1/pastors/:id</td><td>Account</td><td>Update mutable fields</td></tr><tr><td>GET</td><td>/api/v1/churches</td><td>Public</td><td>List churches with filters</td></tr><tr><td>POST</td><td>/api/v1/churches</td><td>Account</td><td>Create church profile</td></tr><tr><td>GET</td><td>/api/v1/churches/:id</td><td>Public</td><td>Church profile + pastors + messages</td></tr><tr><td>GET</td><td>/api/v1/events</td><td>Public</td><td>List events — type, church filters</td></tr><tr><td>POST</td><td>/api/v1/events</td><td>Account</td><td>Create event</td></tr><tr><td>GET</td><td>/api/v1/events/:id</td><td>Public</td><td>Event detail + messages + testimonies</td></tr><tr><td>POST</td><td>/api/v1/events/:id/testimony</td><td>Public</td><td>Submit testimony</td></tr><tr><td>GET</td><td>/api/v1/search</td><td>Public</td><td>Search messages, pastors, churches</td></tr><tr><td>POST</td><td>/api/v1/auth/register</td><td>Public</td><td>Create account</td></tr><tr><td>POST</td><td>/api/v1/auth/login</td><td>Public</td><td>Login — returns JWT</td></tr><tr><td>GET</td><td>/api/v1/users/me</td><td>Account</td><td>Authenticated user profile</td></tr><tr><td>GET</td><td>/api/v1/users/me/saved</td><td>Account</td><td>Saved messages and events</td></tr></tbody></table>
+<div class="banner">04 — Quote Card Generation</div>
+<p>The shareable quote card is the most important Phase 1 feature technically. Generated client-side using html2canvas with server-side fallback via Satori (headless canvas rendering).</p>
+<table class="prop-table"><thead><tr><th>Aspect</th><th>Spec</th></tr></thead><tbody><tr><td>Canvas size</td><td>1080 × 1080px (Instagram square / WhatsApp-friendly)</td></tr><tr><td>Background</td><td>Deep Navy (#0F1B2D)</td></tr><tr><td>Quote font</td><td>DM Serif Display, 36px, white</td></tr><tr><td>Attribution</td><td>Inter, 18px, Sacred Gold — Pastor Name · Church · Date</td></tr><tr><td>Logo</td><td>WaMPaS wordmark, top-left, 24px</td></tr><tr><td>Opening quote mark</td><td>DM Serif Display, 96px, gold — decorative</td></tr><tr><td>Generation trigger</td><td>User taps Share on message detail page</td></tr><tr><td>Storage</td><td>Generated PNG stored in Cloudflare R2 with 24-hour TTL</td></tr></tbody></table>
+<div class="doc-footer">
+  <p>WaMPaS &middot; Technical Architecture — Phase 1 &middot; Devstrike Digital Limited &middot; Confidential</p>
+  <p class="footer-brand">whatmypastorsaid.com &middot; Prepared by Richard Uzor</p>
+</div>
+</div>
+</body>
+</html>

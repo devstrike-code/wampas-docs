@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Technical Architecture — Grand Vision — WaMPaS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:14px;color:#2C2C2E;background:#F4F2EE;line-height:1.6}
+.page{max-width:900px;margin:0 auto;padding:40px 48px;background:#FFFFFF}
+/* Cover */
+.cover{background:#0F1B2D;padding:80px 60px;margin-bottom:40px;border-radius:4px}
+.cover-tag{font-size:11px;font-weight:700;color:#C9A84C;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.cover-title{font-size:52px;font-weight:700;color:#FFFFFF;line-height:1.1;margin-bottom:12px}
+.cover-sub{font-size:18px;color:#AAAAAA;font-style:italic;margin-bottom:32px}
+.cover-meta{font-size:12px;color:#888;border-top:2px solid #C9A84C;padding-top:16px}
+/* Banners */
+.banner{background:#0F1B2D;color:#C9A84C;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:12px 20px;margin:40px 0 20px;border-radius:3px}
+/* Headings */
+h1{font-size:24px;font-weight:700;color:#0F1B2D;border-bottom:4px solid #C9A84C;padding-bottom:8px;margin:36px 0 14px}
+h2{font-size:18px;font-weight:700;color:#0F1B2D;margin:28px 0 10px}
+h3{font-size:15px;font-weight:700;color:#2C2C2E;margin:20px 0 8px}
+p{margin:6px 0;font-size:14px;color:#2C2C2E}
+/* Callouts */
+.callout{border-left:4px solid #1A7F6E;background:#D4EDE9;padding:14px 18px;margin:16px 0;border-radius:0 4px 4px 0}
+.callout.gold{border-left-color:#C9A84C;background:#F5E6C0}
+.callout.amber{border-left-color:#7A4F00;background:#FFF4D6}
+.callout.navy{border-left-color:#0F1B2D;background:#EEF0F3}
+.callout-label{font-size:12px;font-weight:700;color:#1A7F6E;margin-bottom:6px}
+.callout.gold .callout-label{color:#7A4F00}
+.callout.amber .callout-label{color:#7A4F00}
+.callout.navy .callout-label{color:#0F1B2D}
+.callout p{font-size:13px;color:#2C2C2E}
+/* Tables */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th{background:#0F1B2D;color:#C9A84C;font-weight:700;padding:9px 12px;text-align:left;font-size:12px}
+td{padding:8px 12px;border:1px solid #D0CCBF;color:#2C2C2E}
+tr:nth-child(even) td{background:#F4F2EE}
+tr:nth-child(odd) td{background:#FFFFFF}
+/* Prop rows */
+.prop-table td:first-child{font-weight:600;background:#F4F2EE;width:30%}
+/* Layer blocks */
+.layer-block{border-left:5px solid #0F1B2D;background:#EEF0F3;padding:20px 24px;margin:16px 0;border-radius:0 6px 6px 0}
+.layer-block.teal{border-left-color:#1A7F6E;background:#D4EDE9}
+.layer-block.gold{border-left-color:#C9A84C;background:#F5E6C0}
+.layer-block.navy{border-left-color:#0F1B2D;background:#EEF0F3}
+.layer-num{font-size:11px;font-weight:700;color:#1A7F6E;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.layer-block.gold .layer-num{color:#7A4F00}
+.layer-block.navy .layer-num{color:#0F1B2D}
+.layer-title{font-size:22px;font-weight:700;color:#0F1B2D;margin-bottom:4px}
+.layer-tag{font-size:13px;color:#666666;font-style:italic;margin-bottom:12px}
+.layer-block ul{padding-left:18px;margin-top:8px}
+.layer-block ul li{margin:4px 0;font-size:13px;color:#2C2C2E}
+/* Flow steps */
+.flow-step{border-left:4px solid #C9A84C;background:#F4F2EE;padding:14px 18px;margin:10px 0;border-radius:0 4px 4px 0}
+.flow-step-title{font-size:14px;font-weight:700;color:#0F1B2D;margin-bottom:8px}
+.flow-step ul{padding-left:16px}
+.flow-step ul li{font-size:13px;color:#2C2C2E;margin:3px 0}
+/* Resource cards */
+.res-card{border-left:4px solid #0F1B2D;background:#F4F2EE;padding:16px 20px;margin:12px 0;border-radius:0 4px 4px 0}
+.res-title{font-size:15px;font-weight:700;color:#0F1B2D;margin-bottom:2px}
+.res-provider{font-size:12px;color:#666666;font-style:italic}
+.res-cost{font-size:13px;font-weight:700;color:#1A7F6E;margin:6px 0}
+.res-body{font-size:13px;color:#2C2C2E;margin:4px 0}
+.res-trigger{font-size:12px;color:#666666;font-style:italic;margin-top:6px}
+/* Bullets */
+ul.doc-list{padding-left:20px;margin:8px 0}
+ul.doc-list li{font-size:14px;color:#2C2C2E;margin:4px 0}
+ul.doc-list li span.det{color:#666666;font-size:13px}
+/* Phase badge */
+.phase-1{background:#D4EDE9;color:#1A7F6E;font-weight:700;padding:2px 8px;border-radius:3px;font-size:12px}
+.phase-2{background:#F5E6C0;color:#7A4F00;font-weight:700;padding:2px 8px;border-radius:3px;font-size:12px}
+.phase-3{background:#EEF0F3;color:#0F1B2D;font-weight:700;padding:2px 8px;border-radius:3px;font-size:12px}
+/* Quote */
+.quote-block{background:#0F1B2D;padding:32px 40px;margin:24px 0;border-radius:4px;text-align:center}
+.quote-block p{font-family:'DM Serif Display',serif;font-size:18px;color:#C9A84C;line-height:1.6}
+/* Footer */
+.doc-footer{background:#0F1B2D;padding:20px 24px;margin-top:60px;border-top:3px solid #C9A84C;border-radius:0 0 4px 4px}
+.doc-footer p{font-size:12px;color:#888}
+.doc-footer .footer-brand{color:#C9A84C;margin-top:4px}
+/* Principle */
+.principle{display:flex;gap:0;margin:10px 0}
+.principle-num{background:#0F1B2D;color:#C9A84C;font-size:20px;font-weight:700;padding:16px 20px;min-width:56px;text-align:center;flex-shrink:0}
+.principle-body{border:1px solid #D0CCBF;padding:14px 18px;flex:1}
+.principle-title{font-size:14px;font-weight:700;color:#0F1B2D;margin-bottom:4px}
+.principle-text{font-size:13px;color:#2C2C2E}
+/* Section header in feature matrix */
+.feat-section td{background:#0F1B2D!important;color:#C9A84C!important;font-weight:700;font-size:13px}
+@media print{
+  body{background:white}
+  .page{padding:20px 24px}
+  .cover{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .banner{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .layer-block{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .callout{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="cover">
+  <div class="cover-tag">Technical Architecture — Grand Vision</div>
+  <div class="cover-title">Technical Architecture</div>
+  <div class="cover-sub">Grand Vision</div>
+  <div class="cover-meta">v2.0 &nbsp;&middot;&nbsp; Richard Uzor — May 2026 &nbsp;&middot;&nbsp; Devstrike Digital Limited</div>
+</div>
+<div class="banner">01 — Architecture Overview</div>
+<p>WaMPaS is a modern, decoupled web application built in three converging layers. The architecture is designed to start simple and scale by layer — no premature complexity. Each phase introduces new architectural components only when the product and traffic demand them.</p>
+<div class="banner">02 — Technology Stack</div>
+<table><thead><tr><th>Layer</th><th>Technology</th><th>Rationale</th></tr></thead><tbody><tr><td>Frontend</td><td>Next.js 14 (App Router) + TypeScript</td><td>SSR for SEO on all archive/event pages, React Server Components, PWA-capable</td></tr><tr><td>Styling</td><td>Tailwind CSS + DM Serif Display + Inter</td><td>Design system tokens, mobile-first, Google Fonts</td></tr><tr><td>State management</td><td>Zustand (client) + TanStack Query (server)</td><td>Lightweight global state, powerful data fetching with caching</td></tr><tr><td>Forms</td><td>React Hook Form + Zod</td><td>Type-safe validation, consistent error UX</td></tr><tr><td>Auth</td><td>NextAuth.js v5</td><td>JWT sessions, Google OAuth for calendar, extensible for SSO</td></tr><tr><td>API</td><td>Node.js + TypeScript + Fastify</td><td>High-performance REST API, type-safe, Zod validation</td></tr><tr><td>Real-time (Phase 3)</td><td>WebSockets via Ably or self-hosted Soketi</td><td>Fellowship rooms, prayer rooms live sessions, DMs</td></tr><tr><td>Database</td><td>PostgreSQL 15 + Prisma ORM</td><td>Relational integrity, Prisma migrations, type-safe queries</td></tr><tr><td>Cache</td><td>Upstash Redis</td><td>Rate limiting, session cache, hot feed data, reaction counts</td></tr><tr><td>Search (Phase 1–2)</td><td>PostgreSQL full-text (tsvector + GIN)</td><td>Zero additional infra for Phase 1 scale</td></tr><tr><td>Search (Phase 3)</td><td>pgvector + OpenAI embeddings</td><td>Semantic search across archive — 'find everything said about fear'</td></tr><tr><td>Storage</td><td>Cloudflare R2</td><td>Zero egress fees, fast CDN delivery to Nigeria</td></tr><tr><td>Email</td><td>Resend + React Email</td><td>Transactional email with branded templates</td></tr><tr><td>Payments</td><td>Paystack + Flutterwave</td><td>NGN primary, diaspora currency fallback</td></tr><tr><td>Deployment</td><td>Vercel (frontend) + Railway (API + DB)</td><td>Zero-config CI/CD, auto-scaling, managed Postgres</td></tr></tbody></table>
+<div class="banner">03 — Route Architecture</div>
+<table><thead><tr><th>Route</th><th>Render</th><th>Layer</th><th>Notes</th></tr></thead><tbody><tr><td>/</td><td>SSR</td><td>Archive</td><td>Message feed — landing page, SEO-indexed</td></tr><tr><td>/messages/[id]</td><td>SSR</td><td>Archive</td><td>Message detail — every message is a unique indexed page</td></tr><tr><td>/pastors/[id]</td><td>SSR</td><td>Archive</td><td>Pastor profile — indexed</td></tr><tr><td>/churches/[id]</td><td>SSR</td><td>Archive</td><td>Church profile — indexed</td></tr><tr><td>/events/[id]</td><td>SSR</td><td>Events</td><td>Event detail — indexed</td></tr><tr><td>/feed</td><td>SSR+CSR</td><td>Social</td><td>Public feed — SSR first paint, CSR pagination</td></tr><tr><td>/rooms/[id]</td><td>CSR</td><td>Social</td><td>Fellowship room — real-time, not indexed</td></tr><tr><td>/prayer/[id]</td><td>CSR</td><td>Social</td><td>Prayer room — real-time, not indexed</td></tr><tr><td>/search</td><td>CSR</td><td>All</td><td>Search — dynamic, not indexed</td></tr><tr><td>/profile</td><td>CSR</td><td>All</td><td>Authenticated user profile</td></tr><tr><td>/admin</td><td>CSR</td><td>Admin</td><td>Protected route, separate subdomain in Phase 3</td></tr></tbody></table>
+<div class="banner">04 — Database Schema Summary</div>
+<table><thead><tr><th>Table</th><th>Key Fields</th><th>Relations</th></tr></thead><tbody><tr><td>users</td><td>id, name, email, password_hash, role, church_id</td><td>has_many messages, saved_messages, room_memberships</td></tr><tr><td>messages</td><td>id, text, date_preached, pastor_id, church_id, event_id, category[]</td><td>belongs_to pastor, church, event, user</td></tr><tr><td>pastors</td><td>id, title, name, church_id, bio, image_url, is_verified</td><td>has_many messages, events, room_appearances</td></tr><tr><td>churches</td><td>id, name, denomination, address, city, is_verified</td><td>has_many pastors, messages, events, rooms</td></tr><tr><td>events</td><td>id, name, type, hosting_church_id, start_date, is_sponsored</td><td>has_many messages, testimonies, rooms</td></tr><tr><td>rooms</td><td>id, name, type, church_id, owner_id, privacy</td><td>has_many memberships, posts, prayer_requests</td></tr><tr><td>prayer_requests</td><td>id, room_id, user_id, text, is_anonymous, is_answered</td><td>belongs_to room; has_many intercessions, testimony</td></tr><tr><td>feed_posts</td><td>id, user_id, type, text, archive_message_id, image_url</td><td>belongs_to user; optionally links to archive message</td></tr><tr><td>reactions</td><td>id, target_type, target_id, type, user_id</td><td>Polymorphic: message, feed_post, room_post</td></tr><tr><td>payments</td><td>id, user_id, type, amount, status, paystack_ref</td><td>Polymorphic: ad, subscription, donation, verification</td></tr></tbody></table>
+<div class="banner">05 — Security Architecture</div>
+<table class="prop-table"><thead><tr><th>Concern</th><th>Mechanism</th></tr></thead><tbody><tr><td>Authentication</td><td>JWT in httpOnly cookies. XSS cannot read tokens. SameSite=Strict.</td></tr><tr><td>Input validation</td><td>Zod schemas on all API inputs. HTML sanitised with DOMPurify.</td></tr><tr><td>SQL injection</td><td>Prisma parameterised queries throughout.</td></tr><tr><td>Rate limiting</td><td>Per-IP and per-user via Redis. Auth endpoints: 5/min with 15-min lockout.</td></tr><tr><td>File uploads</td><td>Magic byte type validation. Sharp strips EXIF. 5MB limit.</td></tr><tr><td>Webhook security</td><td>Paystack: HMAC-SHA512 signature verification.</td></tr><tr><td>Real-time auth (Phase 3)</td><td>WebSocket connections authenticated via JWT token on handshake.</td></tr><tr><td>Secrets</td><td>Railway environment variables. Never in source code.</td></tr></tbody></table>
+<div class="doc-footer">
+  <p>WaMPaS &middot; Technical Architecture — Grand Vision &middot; Devstrike Digital Limited &middot; Confidential</p>
+  <p class="footer-brand">whatmypastorsaid.com &middot; Prepared by Richard Uzor</p>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Infrastructure Resource Report — Phase 3 — WaMPaS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;font-size:14px;color:#2C2C2E;background:#F4F2EE;line-height:1.6}
+.page{max-width:900px;margin:0 auto;padding:40px 48px;background:#FFFFFF}
+/* Cover */
+.cover{background:#0F1B2D;padding:80px 60px;margin-bottom:40px;border-radius:4px}
+.cover-tag{font-size:11px;font-weight:700;color:#C9A84C;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.cover-title{font-size:52px;font-weight:700;color:#FFFFFF;line-height:1.1;margin-bottom:12px}
+.cover-sub{font-size:18px;color:#AAAAAA;font-style:italic;margin-bottom:32px}
+.cover-meta{font-size:12px;color:#888;border-top:2px solid #C9A84C;padding-top:16px}
+/* Banners */
+.banner{background:#0F1B2D;color:#C9A84C;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:12px 20px;margin:40px 0 20px;border-radius:3px}
+/* Headings */
+h1{font-size:24px;font-weight:700;color:#0F1B2D;border-bottom:4px solid #C9A84C;padding-bottom:8px;margin:36px 0 14px}
+h2{font-size:18px;font-weight:700;color:#0F1B2D;margin:28px 0 10px}
+h3{font-size:15px;font-weight:700;color:#2C2C2E;margin:20px 0 8px}
+p{margin:6px 0;font-size:14px;color:#2C2C2E}
+/* Callouts */
+.callout{border-left:4px solid #1A7F6E;background:#D4EDE9;padding:14px 18px;margin:16px 0;border-radius:0 4px 4px 0}
+.callout.gold{border-left-color:#C9A84C;background:#F5E6C0}
+.callout.amber{border-left-color:#7A4F00;background:#FFF4D6}
+.callout.navy{border-left-color:#0F1B2D;background:#EEF0F3}
+.callout-label{font-size:12px;font-weight:700;color:#1A7F6E;margin-bottom:6px}
+.callout.gold .callout-label{color:#7A4F00}
+.callout.amber .callout-label{color:#7A4F00}
+.callout.navy .callout-label{color:#0F1B2D}
+.callout p{font-size:13px;color:#2C2C2E}
+/* Tables */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th{background:#0F1B2D;color:#C9A84C;font-weight:700;padding:9px 12px;text-align:left;font-size:12px}
+td{padding:8px 12px;border:1px solid #D0CCBF;color:#2C2C2E}
+tr:nth-child(even) td{background:#F4F2EE}
+tr:nth-child(odd) td{background:#FFFFFF}
+/* Prop rows */
+.prop-table td:first-child{font-weight:600;background:#F4F2EE;width:30%}
+/* Layer blocks */
+.layer-block{border-left:5px solid #0F1B2D;background:#EEF0F3;padding:20px 24px;margin:16px 0;border-radius:0 6px 6px 0}
+.layer-block.teal{border-left-color:#1A7F6E;background:#D4EDE9}
+.layer-block.gold{border-left-color:#C9A84C;background:#F5E6C0}
+.layer-block.navy{border-left-color:#0F1B2D;background:#EEF0F3}
+.layer-num{font-size:11px;font-weight:700;color:#1A7F6E;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.layer-block.gold .layer-num{color:#7A4F00}
+.layer-block.navy .layer-num{color:#0F1B2D}
+.layer-title{font-size:22px;font-weight:700;color:#0F1B2D;margin-bottom:4px}
+.layer-tag{font-size:13px;color:#666666;font-style:italic;margin-bottom:12px}
+.layer-block ul{padding-left:18px;margin-top:8px}
+.layer-block ul li{margin:4px 0;font-size:13px;color:#2C2C2E}
+/* Flow steps */
+.flow-step{border-left:4px solid #C9A84C;background:#F4F2EE;padding:14px 18px;margin:10px 0;border-radius:0 4px 4px 0}
+.flow-step-title{font-size:14px;font-weight:700;color:#0F1B2D;margin-bottom:8px}
+.flow-step ul{padding-left:16px}
+.flow-step ul li{font-size:13px;color:#2C2C2E;margin:3px 0}
+/* Resource cards */
+.res-card{border-left:4px solid #0F1B2D;background:#F4F2EE;padding:16px 20px;margin:12px 0;border-radius:0 4px 4px 0}
+.res-title{font-size:15px;font-weight:700;color:#0F1B2D;margin-bottom:2px}
+.res-provider{font-size:12px;color:#666666;font-style:italic}
+.res-cost{font-size:13px;font-weight:700;color:#1A7F6E;margin:6px 0}
+.res-body{font-size:13px;color:#2C2C2E;margin:4px 0}
+.res-trigger{font-size:12px;color:#666666;font-style:italic;margin-top:6px}
+/* Bullets */
+ul.doc-list{padding-left:20px;margin:8px 0}
+ul.doc-list li{font-size:14px;color:#2C2C2E;margin:4px 0}
+ul.doc-list li span.det{color:#666666;font-size:13px}
+/* Phase badge */
+.phase-1{background:#D4EDE9;color:#1A7F6E;font-weight:700;padding:2px 8px;border-radius:3px;font-size:12px}
+.phase-2{background:#F5E6C0;color:#7A4F00;font-weight:700;padding:2px 8px;border-radius:3px;font-size:12px}
+.phase-3{background:#EEF0F3;color:#0F1B2D;font-weight:700;padding:2px 8px;border-radius:3px;font-size:12px}
+/* Quote */
+.quote-block{background:#0F1B2D;padding:32px 40px;margin:24px 0;border-radius:4px;text-align:center}
+.quote-block p{font-family:'DM Serif Display',serif;font-size:18px;color:#C9A84C;line-height:1.6}
+/* Footer */
+.doc-footer{background:#0F1B2D;padding:20px 24px;margin-top:60px;border-top:3px solid #C9A84C;border-radius:0 0 4px 4px}
+.doc-footer p{font-size:12px;color:#888}
+.doc-footer .footer-brand{color:#C9A84C;margin-top:4px}
+/* Principle */
+.principle{display:flex;gap:0;margin:10px 0}
+.principle-num{background:#0F1B2D;color:#C9A84C;font-size:20px;font-weight:700;padding:16px 20px;min-width:56px;text-align:center;flex-shrink:0}
+.principle-body{border:1px solid #D0CCBF;padding:14px 18px;flex:1}
+.principle-title{font-size:14px;font-weight:700;color:#0F1B2D;margin-bottom:4px}
+.principle-text{font-size:13px;color:#2C2C2E}
+/* Section header in feature matrix */
+.feat-section td{background:#0F1B2D!important;color:#C9A84C!important;font-weight:700;font-size:13px}
+@media print{
+  body{background:white}
+  .page{padding:20px 24px}
+  .cover{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .banner{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  th{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .layer-block{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .callout{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="page">
+<div class="cover">
+  <div class="cover-tag">Infrastructure Resource Report — Phase 3</div>
+  <div class="cover-title">Infrastructure Report — Phase 3</div>
+  <div class="cover-sub">Full Social Platform</div>
+  <div class="cover-meta">v2.0 &nbsp;&middot;&nbsp; Richard Uzor — May 2026 &nbsp;&middot;&nbsp; Devstrike Digital Limited</div>
+</div>
+<div class="banner">01 — Phase 3 Infrastructure Focus</div>
+<p>Phase 3 introduces the most significant infrastructure addition: a real-time WebSocket layer for fellowship rooms, prayer rooms, and DMs. A read replica is added to handle the read-heavy browse load. AI embedding generation is added for semantic search.</p>
+<div class="banner">02 — New Phase 3 Components</div>
+<div class="res-card">
+  <div class="res-title">WebSocket Server <span class="res-provider">Ably (managed) or Soketi (self-hosted on Railway)</span></div>
+  <div class="res-body"><strong>Tier:</strong> Ably: usage-based | Soketi: ~$10/month</div>
+  <div class="res-cost">Estimated Cost: ₦32,000–₦64,000/month</div>
+  <div class="res-body">Powers real-time messaging in fellowship rooms, live prayer sessions, and DMs. Ably recommended for Phase 3 launch — managed service, Nigerian PoPs, no DevOps overhead. Evaluate Soketi at Phase 3 maturity for cost optimisation.</div>
+  <div class="res-trigger">Scaling trigger: Ably free tier: 200 concurrent connections, 6M messages/month. Upgrade when: concurrent connections regularly &gt; 160 (80% of limit).</div>
+</div>
+<div class="res-card">
+  <div class="res-title">Database Read Replica <span class="res-provider">Railway PostgreSQL replica</span></div>
+  <div class="res-body"><strong>Tier:</strong> ~$15–20/month</div>
+  <div class="res-cost">Estimated Cost: ₦24,000–₦32,000/month</div>
+  <div class="res-body">All read-only API queries (GET endpoints) routed to replica. Write queries continue to primary. Dramatically improves browse-heavy load performance as archive grows to 250,000+ messages.</div>
+  <div class="res-trigger">Scaling trigger: Add replica when: read:write ratio &gt; 10:1, or GET query P95 consistently &gt; 100ms.</div>
+</div>
+<div class="res-card">
+  <div class="res-title">AI Embedding Service <span class="res-provider">OpenAI text-embedding-3-small API</span></div>
+  <div class="res-body"><strong>Tier:</strong> Usage-based (~$0.02/1M tokens)</div>
+  <div class="res-cost">Estimated Cost: ₦32,000–₦64,000/month</div>
+  <div class="res-body">Generates 1536-dimension vector embeddings for every new message post. Stored in pgvector column. Powers semantic search — 'find everything said about healing by Yoruba pastors'. Cost is negligible per message (~₦0.05 per embedding).</div>
+  <div class="res-trigger">Scaling trigger: Cost scales linearly with message volume. At 250,000 messages: total embedding cost ~₦2,500 one-time. Monthly cost is ongoing for new posts only.</div>
+</div>
+<div class="res-card">
+  <div class="res-title">Upstash Redis (paid) <span class="res-provider">Upstash Redis Pay-per-use</span></div>
+  <div class="res-body"><strong>Tier:</strong> Usage-based</div>
+  <div class="res-cost">Estimated Cost: ₦16,000–₦32,000/month</div>
+  <div class="res-body">Now critical for: WebSocket presence caching, live prayer room session state, feed personalisation cache, premium subscription status cache. Free tier was sufficient for Phase 2 — Phase 3 social features push beyond it.</div>
+  <div class="res-trigger">Scaling trigger: Upgrade from free tier when daily Redis commands consistently &gt; 8,000.</div>
+</div>
+<div class="banner">03 — Phase 3 Full Cost Summary</div>
+<table><thead><tr><th>Item</th><th>Monthly Cost</th></tr></thead><tbody><tr><td>Vercel Pro Team</td><td>₦80,000</td></tr><tr><td>Railway (API + DB primary + replica + workers)</td><td>₦96,000–₦120,000</td></tr><tr><td>WebSocket (Ably)</td><td>₦32,000–₦64,000</td></tr><tr><td>Cloudflare R2 + CDN Pro</td><td>₦56,000–₦80,000</td></tr><tr><td>Upstash Redis</td><td>₦16,000–₦32,000</td></tr><tr><td>Resend (Business)</td><td>₦64,000–₦96,000</td></tr><tr><td>OpenAI embeddings</td><td>₦32,000–₦64,000</td></tr><tr><td>Sentry Team</td><td>₦42,000</td></tr><tr><td>Plausible Business</td><td>₦30,000</td></tr><tr><td>FCM</td><td>₦0</td></tr><tr><td>Misc + buffer (10%)</td><td>₦45,000–₦65,000</td></tr><tr><td>TOTAL</td><td>₦493,000–₦701,000/month</td></tr></tbody></table>
+<div class="callout teal">
+  <div class="callout-label">Cost vs Revenue</div>
+  <p>Phase 3 infrastructure cost of ~₦600,000/month against projected revenue of ₦4,000,000+ represents a 15% cost ratio — well within healthy SaaS margins. Infrastructure is not the constraint to growth at this stage.</p>
+</div>
+<div class="banner">04 — Phase 3 Disaster Recovery</div>
+<table class="prop-table"><thead><tr><th>Item</th><th>Phase 3 Policy</th></tr></thead><tbody><tr><td>Database backups</td><td>Daily automated + point-in-time recovery (PITR) via Railway. 30-day retention.</td></tr><tr><td>RTO</td><td>1 hour — primary DB failover to replica in &lt; 5 minutes, full restore from backup in &lt; 1 hour.</td></tr><tr><td>RPO</td><td>1 hour — WAL streaming from primary to replica. Maximum 1 hour of data loss in worst case.</td></tr><tr><td>Room message history</td><td>PostgreSQL primary (replicated). Messages older than 12 months archived to R2 cold storage.</td></tr><tr><td>WebSocket failover</td><td>Ably handles redundancy automatically. Soketi: deploy 2 instances with load balancer.</td></tr><tr><td>Incident response</td><td>Page on-call engineer immediately. Status page updated within 15 minutes. Post-mortem within 24 hours.</td></tr></tbody></table>
+<div class="doc-footer">
+  <p>WaMPaS &middot; Infrastructure Resource Report — Phase 3 &middot; Devstrike Digital Limited &middot; Confidential</p>
+  <p class="footer-brand">whatmypastorsaid.com &middot; Prepared by Richard Uzor</p>
+</div>
+</div>
+</body>
+</html>
